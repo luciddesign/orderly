@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HTML Document</title>
+    <link href='style.css' rel='stylesheet' type='text/css' />
+    <meta charset='utf-8' />
+  </head>
+  <body>
+
+    <div class='container'>
+
+      <!-- 1 -->
+
+      <div class='box'>
+        <div><span>1</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>2</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>3</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <!-- 2 -->
+
+      <div class='box'>
+        <div><span>1</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>2</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>3</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <!-- 3 -->
+
+      <div class='box'>
+        <div><span>1</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>2</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <div class='box'>
+        <div><span>3</span></div>
+        <div></div>
+        <div></div>
+      </div>
+
+    </div>
+
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src='../src/orderly.js'></script>
+    <script>
+      $.each( [ 1, 2, 3 ], function( i, n ) {
+          $( '.box > :nth-child(' + n + ')' ).orderly();
+      });
+    </script>
+  </body>
+</html>
