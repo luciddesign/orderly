@@ -95,6 +95,8 @@
 
     // -- jQuery Plugin --
 
+    // Call for each specific collection of elements to align per row.
+
     $.fn.orderly = function( options ) {
         var orderly = new Orderly( this, options );
 
@@ -102,6 +104,12 @@
         orderly.handlers().resize();
 
         return this;
+    };
+
+    // Call on a collection of parent containers. Each direct child element
+    // will be given orderly().
+
+    $.fn.orderly.children = function( options ) {
     };
 
 })( jQuery );
