@@ -60,3 +60,11 @@ can accurately calculate the current number of columns.
 
 
 [w3c]: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+
+
+Development
+-----------
+
+### Build
+
+Run `npm run build` to compress to `dist/jquery.orderly.min.js`.

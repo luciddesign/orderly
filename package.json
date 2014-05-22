@@ -1,0 +1,12 @@
+{
+    "name": "jquery-orderly",
+    "version": "0.0.1",
+
+    "dependencies": {
+        "uglify-js": "~2.4.13"
+    },
+
+    "scripts": {
+        "build": "bin/build.sh"
+    }
+}
