@@ -58,7 +58,7 @@
     p._eachRow = function( callback ) {
         var d = this._dimensions();
 
-        for ( var start, end, row, i = 0; i < d.r; i++ ) {
+        for ( var start, $row, i = 0; i < d.r; i++ ) {
             start = d.c * i;
             $row   = this.$elements.slice( start, start + d.c );
 

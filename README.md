@@ -1,5 +1,5 @@
-Orderly jQuery Plugin
-=====================
+jQuery Orderly
+==============
 
 Orderly equalizes the heights for equivalent floated grid columns and/or their
 nested children for each optical row.
