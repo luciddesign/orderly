@@ -42,7 +42,7 @@ Which is kind of the whole point ...
 
 ### Order of registration
 
-Event listeners are [triggered sequentially][wc3] in the order they were
+Event listeners are [triggered sequentially][001] in the order they were
 registered. Considering this, it is crucial that you register any nested
 elements with `orderly()` in a top to bottom order. eg.
 
@@ -59,7 +59,7 @@ When these offset values are equal for each element in the first row, Orderly
 can accurately calculate the current number of columns.
 
 
-[w3c]: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
+[001]: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
 
 
 Development
