@@ -4,7 +4,9 @@
         this.__init( $elements, options );
     };
 
-    var p = Orderly.prototype;
+    var o = Orderly, p = o.prototype;
+
+    o.counter = 0;
 
     // -- Constructor --
 
@@ -71,7 +73,7 @@
         return { c: columns, r: rows };
     };
 
-    p._resizeElements = function( $elements, height ) {
+    p._resizeElements = function( $elements ) {
         var height = this._maxHeight( $elements );
 
         $elements.each( function( i, element ) {
@@ -95,21 +97,57 @@
 
     // -- jQuery Plugin --
 
+    var g = {};
+
     // Call for each specific collection of elements to align per row.
 
-    $.fn.orderly = function( options ) {
-        var orderly = new Orderly( this, options );
+    g._register = function( options ) {
+        var o = new Orderly( this, options );
 
-        orderly.attach();
-        orderly.handlers().resize();
-
-        return this;
+        o.attach();
+        o.handlers().resize();
     };
 
     // Call on a collection of parent containers. Each direct child element
     // will be given orderly().
 
-    $.fn.orderly.children = function( options ) {
+    g._children = function( options ) {
+        var length    = this[0].children.length,
+            counter   = o.counter++; // ensures unique selectors
+
+        g._childrenData.call( this, counter );
+        g._registerChildren( length, counter, options );
+        g._register.call( this, options );
+    };
+
+    g._childrenData = function( counter ) {
+        this.each( function( i, element ) {
+            $( element.children ).each( function( i, child ) {
+                child.dataset.orderly = counter + ':' + i;
+            });
+        });
+    };
+
+    g._registerChildren = function( length, counter, options ) {
+        for ( var i = 0; i < length; i++ ) {
+            g._register.call( g._find( counter, i ), options );
+        }
+    };
+
+    g._find = function( counter, i ) {
+        return $( '[data-orderly="' + counter + ':' + i + '"]' );
+    };
+
+    // ---
+
+    $.fn.orderly = function( options ) {
+        if ( options && options.children ) {
+            g._children.call( this, options );
+        } else {
+            g._register.call( this, options );
+        }
+
+        return this;
     };
 
 })( jQuery );

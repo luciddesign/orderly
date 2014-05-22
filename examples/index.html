@@ -74,12 +74,18 @@
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
     <script src='../src/orderly.js'></script>
 
+    <!--
     <script>
       $.each( [ 1, 2, 3 ], function( i, n ) {
           $( '.box > :nth-child(' + n + ')' ).orderly();
       });
 
       $( '.box' ).orderly(); // optional as all children already align
+    </script>
+    -->
+
+    <script>
+      $( '.box' ).orderly( { children: true } );
     </script>
 
   </body>
