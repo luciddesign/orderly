@@ -60,7 +60,7 @@
 
         for ( var start, $row, i = 0; i < d.r; i++ ) {
             start = d.c * i;
-            $row   = this.$elements.slice( start, start + d.c );
+            $row  = this.$elements.slice( start, start + d.c );
 
             callback( $row, i );
         }
@@ -119,8 +119,8 @@
     // will be given orderly().
 
     g._children = function( options ) {
-        var length    = this[0].children.length,
-            counter   = o.counter++; // ensures unique selectors
+        var length  = this[0].children.length,
+            counter = o.counter++; // ensures unique selectors
 
         g._childrenData.call( this, counter );
         g._registerChildren( length, counter, options );
