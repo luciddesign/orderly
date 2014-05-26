@@ -42,11 +42,11 @@
     p._columnCount = function() {
         var lastPos = 0, pos = 0, count = 0;
 
-        this.$elements.each( function( i ) {
-            pos = $( this ).offset().top, count = i;
+        this.$elements.each( function() {
+            pos = $( this ).offset().top, count += 1;
 
             if ( pos !== lastPos && lastPos !== 0 ) {
-                return false;
+                count -= 1; return false;
             }
 
             lastPos = pos;
@@ -99,6 +99,13 @@
 
     var g = {};
 
+    g._delegate = function( options ) {
+        var method = '_' + ( options && options.method || 'register' ),
+            m      = g[method].bind( this );
+
+        m( options );
+    };
+
     // Call for each specific collection of elements to align per row.
 
     g._register = function( options ) {
@@ -141,10 +148,8 @@
     // ---
 
     $.fn.orderly = function( options ) {
-        if ( options && options.children ) {
-            g._children.call( this, options );
-        } else {
-            g._register.call( this, options );
+        if ( this.length > 0 ) {
+            g._delegate.call( this, options );
         }
 
         return this;

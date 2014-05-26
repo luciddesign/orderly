@@ -19,15 +19,15 @@ Usage
 If all your columns have an equivalent inner markup structure, then you can
 simply use Orderly as follows:
 
-    $( '.column' ).orderly( { children: true } );
+    $( '.column' ).orderly( { method: 'children' } );
 
 This will apply Orderly to the container element and each of its direct
 children. Otherwise, if your markup structure is more complex (you may wish
 to apply Orderly to certain nested elements), you should apply Orderly to each
 element in sequence:
 
-    $( '.column figure img' ).orderly();
-    $( '.column figure figcaption' ).orderly();
+    $( '.column > figure img' ).orderly();
+    $( '.column > figure figcaption' ).orderly();
 
     ...
 
@@ -46,8 +46,8 @@ Event listeners are [triggered sequentially][001] in the order they were
 registered. Considering this, it is crucial that you register any nested
 elements with `orderly()` in a top to bottom order. eg.
 
-    $( '.product h3' ).orderly();
-    $( '.product p' ).orderly();
+    $( '.product > h3' ).orderly();
+    $( '.product > p' ).orderly();
 
     ...
 
