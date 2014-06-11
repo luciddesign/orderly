@@ -62,6 +62,18 @@ can accurately calculate the current number of columns.
 [001]: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
 
 
+### Multiple selectors
+
+When you want to apply Orderly to a set of elements separately, you must call
+Orderly once per selector, as in the usage examples above. You cannot use
+multiple selectors, eg.
+
+    $( '.one, .two, .three' )
+
+In this case, Orderly would be applied as if they were one set of elements.
+This is probably not what you had intended.
+
+
 Development
 -----------
 
