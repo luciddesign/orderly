@@ -43,9 +43,9 @@
         var lastPos = 0, pos = 0, count = 0;
 
         this.$elements.each( function() {
-            pos = $( this ).offset().top, count += 1;
+            pos = $( this ).offset().left, count += 1;
 
-            if ( pos !== lastPos && lastPos !== 0 ) {
+            if ( pos <= lastPos && lastPos !== 0 ) {
                 count -= 1; return false;
             }
 
