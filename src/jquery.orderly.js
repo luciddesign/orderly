@@ -77,7 +77,7 @@
         var height = this._maxHeight( $elements );
 
         $elements.each( function( i, element ) {
-            $( element ).height( height );
+            $( element ).css( 'min-height', height );
         });
     };
 
@@ -85,7 +85,7 @@
         var current, max = 0, reset = this.options.resetHeight;
 
         $elements.each( function( i, element ) {
-            current = $( element ).height( reset ).height();
+            current = $( element ).css( 'min-height', reset ).height();
 
             if ( current > max ) {
                 max = current;
