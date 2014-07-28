@@ -77,7 +77,7 @@
         var height = this._maxHeight( $elements );
 
         $elements.each( function( i, element ) {
-            $( element ).css( 'min-height', height );
+            $( element ).css( 'height', height );
             $( element ).trigger( 'orderly.resize', [
                 element,
                 height,
@@ -88,7 +88,7 @@
     };
 
     p._maxHeight = function( $elements ) {
-        var current, max = 0, reset = this.options.resetHeight;
+        var value, current, max = 0, reset = this.options.resetHeight;
 
         $elements.each( function( i, element ) {
             $( element ).trigger( 'orderly.reset', [
@@ -98,14 +98,17 @@
                 $elements.length
             ]);
 
-            current = $( element ).css( 'min-height', reset ).height();
+            $( element ).css( 'height', reset );
+            current = element.getBoundingClientRect().height;
 
             if ( current > max ) {
                 max = current;
             }
         });
 
-        return max += 'px';
+        value = Math.round( max ).toString(); // browser consistent rounding
+
+        return value += 'px';
     };
 
     // -- jQuery Plugin --
