@@ -39,6 +39,22 @@ Which is kind of the whole point ...
 
     $( '.column' ).orderly();
 
+### Events
+
+You can hook into the Orderly process by binding event handlers to
+`'orderly.reset'` and `'orderly.resize'`. An `'orderly.reset'` takes place
+immediately before element dimensions are reset on a window resize, while an
+`'orderly.resize'` occurs after the new dimensions have been calculated and
+applied.
+
+Each event handler is passed the arguments `event`, `element`, `height`,
+`column` and `columnCount`. For example:
+
+    var handler = function( e, el, h ) { $( el ).css( 'line-height', h ) };
+
+    $.each( [ 'orderly.reset', 'orderly.resize' ], function( i, event ) {
+        $( '.product > figure' ).on( event, handler );
+    });
 
 ### Order of registration
 
@@ -58,9 +74,7 @@ offset across the row.
 When these offset values are equal for each element in the first row, Orderly
 can accurately calculate the current number of columns.
 
-
 [001]: http://www.w3.org/TR/DOM-Level-3-Events/#event-flow
-
 
 ### Multiple selectors
 

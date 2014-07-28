@@ -78,6 +78,12 @@
 
         $elements.each( function( i, element ) {
             $( element ).css( 'min-height', height );
+            $( element ).trigger( 'orderly.resize', [
+                element,
+                height,
+                i,
+                $elements.length
+            ]);
         });
     };
 
@@ -85,6 +91,13 @@
         var current, max = 0, reset = this.options.resetHeight;
 
         $elements.each( function( i, element ) {
+            $( element ).trigger( 'orderly.reset', [
+                element,
+                reset,
+                i,
+                $elements.length
+            ]);
+
             current = $( element ).css( 'min-height', reset ).height();
 
             if ( current > max ) {
