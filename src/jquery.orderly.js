@@ -33,7 +33,7 @@
         var that = this;
 
         return { resize: function( e ) {
-            that._eachRow( that._resizeElements.bind( that ) );
+            that._eachRow( function( $elements ) { that._resizeElements( $elements ); } );
         }};
     };
 
@@ -117,9 +117,9 @@
 
     g._delegate = function( options ) {
         var method = '_' + ( options && options.method || 'register' ),
-            m      = g[method].bind( this );
+            m      = g[method];
 
-        m( options );
+        m.call( this, options );
     };
 
     // Call for each specific collection of elements to align per row.
@@ -146,7 +146,7 @@
     g._childrenData = function( counter ) {
         this.each( function( i, element ) {
             $( element.children ).each( function( i, child ) {
-                child.dataset.orderly = counter + ':' + i;
+                $( child ).data( 'orderly', counter + ':' + i );
             });
         });
     };
