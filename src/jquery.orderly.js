@@ -33,7 +33,9 @@
         var that = this;
 
         return { resize: function( e ) {
-            that._eachRow( function( $elements ) { that._resizeElements( $elements ); } );
+            that._eachRow( function( $elements ) {
+                that._resizeElements( $elements );
+            });
         }};
     };
 
@@ -67,8 +69,8 @@
     };
 
     p._dimensions = function() {
-        var columns = this._columnCount(),
-            rows    = Math.ceil( this.$elements.length / columns );
+        var columns = this._columnCount()
+          , rows    = Math.ceil( this.$elements.length / columns );
 
         return { c: columns, r: rows };
     };
@@ -79,27 +81,28 @@
         $elements.each( function( i, element ) {
             $( element ).css( 'height', height );
             $( element ).trigger( 'orderly.resize', [
-                element,
-                height,
-                i,
-                $elements.length
+                element
+              , height
+              , i
+              , $elements.length
             ]);
         });
     };
 
     p._maxHeight = function( $elements ) {
-        var value, current, max = 0, reset = this.options.resetHeight;
+        var value, current, max = 0, reset = this.options.resetHeight, box;
 
         $elements.each( function( i, element ) {
             $( element ).trigger( 'orderly.reset', [
-                element,
-                reset,
-                i,
-                $elements.length
+                element
+              , reset
+              , i
+              , $elements.length
             ]);
 
             $( element ).css( 'height', reset );
-            current = element.getBoundingClientRect().height;
+            box     = element.getBoundingClientRect();
+            current = box.bottom - box.top;
 
             if ( current > max ) {
                 max = current;
@@ -116,8 +119,8 @@
     var g = {};
 
     g._delegate = function( options ) {
-        var method = '_' + ( options && options.method || 'register' ),
-            m      = g[method];
+        var method = '_' + ( options && options.method || 'register' )
+          , m      = g[method];
 
         m.call( this, options );
     };
@@ -135,8 +138,8 @@
     // will be given orderly().
 
     g._children = function( options ) {
-        var length  = this[0].children.length,
-            counter = o.counter++; // ensures unique selectors
+        var length  = this[0].children.length
+          , counter = o.counter++; // ensures unique selectors
 
         g._childrenData.call( this, counter );
         g._registerChildren( length, counter, options );
@@ -146,7 +149,7 @@
     g._childrenData = function( counter ) {
         this.each( function( i, element ) {
             $( element.children ).each( function( i, child ) {
-                $( child ).data( 'orderly', counter + ':' + i );
+                $( child ).attr( 'data-orderly', counter + ':' + i );
             });
         });
     };

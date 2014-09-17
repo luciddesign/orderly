@@ -21,18 +21,20 @@
 .box {
     box-sizing: border-box;
     float: left;
-    width: 100%;
+    width: 33.33%;
     margin-top: 18px;
 
-    border: 1px solid rgba( 0, 0, 0, 0.6 );
+    border: 1px solid #666666;
 }
 
-@media screen and ( min-width: 480px ) {
+/* Desktop First for IE testing */
+
+@media screen and ( max-width: 479px ) {
+    .box { width: 100%; }
+}
+
+@media screen and ( max-width: 719px ) {
     .box { width: 50%; }
-}
-
-@media screen and ( min-width: 720px ) {
-    .box { width: 33.33%; }
 }
 
 .box > div {
@@ -53,45 +55,45 @@
     height: 20px;
 }
 
-.box > :nth-child( 1 ) {
-    background-color: rgba( 0, 0, 0, 0.15 );
+.box > .aaa {
+    background-color: #d8d8d8;
     height: 36px;
 }
 
-.box > :nth-child( 2 ) {
-    background-color: rgba( 0, 0, 0, 0.3 );
+.box > .bbb {
+    background-color: #b2b2b2;
     height: 18px;
 }
 
-.box > :nth-child( 3 ) {
-    background-color: rgba( 0, 0, 0, 0.45 );
+.box > .ccc {
+    background-color: #8c8c8c;
     height: 48px;
 }
 
 /* -- 1 -- */
 
-.box:nth-child( 3n ) > :nth-child( 1 ) {
+.box.aa > .aaa {
     height: 72px;
 }
 
-.box:nth-child( 3n ) > :nth-child( 2 ) {
+.box.bb > .bbb {
     height: 18px;
 }
 
-.box:nth-child( 3n ) > :nth-child( 3 ) {
+.box.cc > .ccc {
     height: 36px;
 }
 
 /* -- 2 -- */
 
-.box:nth-child( 3n + 1 ) > :nth-child( 1 ) {
+.box.aa > .aaa {
     height: 72px;
 }
 
-.box:nth-child( 3n + 1 ) > :nth-child( 2 ) {
+.box.bb > .bbb {
     height: 36px;
 }
 
-.box:nth-child( 3n + 1 ) > :nth-child( 3 ) {
+.box.cc > .ccc {
     height: 64px;
 }
