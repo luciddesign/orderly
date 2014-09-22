@@ -76,7 +76,8 @@
     };
 
     p._resizeElements = function( $elements ) {
-        var height = this._maxHeight( $elements );
+        var height  = this._maxHeight( $elements )
+          , options = this.options;
 
         $elements.each( function( i, element ) {
             $( element ).css( 'height', height );
@@ -85,22 +86,24 @@
               , height
               , i
               , $elements.length
+              , options
             ]);
         });
     };
 
     p._maxHeight = function( $elements ) {
-        var value, current, max = 0, reset = this.options.resetHeight, box;
+        var value, current, max = 0, options = this.options, box;
 
         $elements.each( function( i, element ) {
             $( element ).trigger( 'orderly.reset', [
                 element
-              , reset
+              , options.resetHeight
               , i
               , $elements.length
+              , options
             ]);
 
-            $( element ).css( 'height', reset );
+            $( element ).css( 'height', options.resetHeight );
             box     = element.getBoundingClientRect();
             current = box.bottom - box.top;
 

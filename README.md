@@ -47,7 +47,7 @@
   applied.
 
   Each event handler is passed the arguments `event`, `element`, `height`,
-  `column` and `columnCount`. For example:
+  `column`, `columnCount` and `options`. For example:
 
     var handler = function( e, el, h ) { $( el ).css( 'line-height', h ) };
 
