@@ -38,7 +38,7 @@
 
     $( '.column' ).orderly();
 
-##  Events  ##
+### Events
 
   You can hook into the Orderly process by binding event handlers to
   `'orderly.reset'` and `'orderly.resize'`. An `'orderly.reset'` takes place
@@ -60,6 +60,9 @@
   resize event on page load:
 
     $( window ).trigger( 'resize' );
+
+
+##  Considerations  ##
 
 ### Order of registration
 
@@ -92,9 +95,18 @@
   In this case, Orderly would be applied as if they were one set of elements.
   This is probably not what you had intended.
 
+### Webfonts
 
-Development
------------
+  Be aware that using Orderly with elements using custom webfonts can result
+  in a race condition in some browsers where Orderly may be triggered before
+  the webfonts have loaded and rendered.
+
+  Some webfont services emit events during the font loading process.
+
+  You may use these to manually trigger a window resize.
+
+
+##  Development  ##
 
 ### Build
 
