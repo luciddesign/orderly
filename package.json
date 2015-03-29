@@ -1,7 +1,8 @@
 {
     "name": "jquery-orderly",
     "version": "0.0.1",
-
+    "main": "./src/jquery.orderly.js",
+    
     "dependencies": {
         "uglify-js": "~2.4.13"
     },
