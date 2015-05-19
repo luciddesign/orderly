@@ -42,12 +42,29 @@
 
   You can hook into the Orderly process by binding event handlers to
   `'orderly.reset'` and `'orderly.resize'`. An `'orderly.reset'` takes place
-  immediately before element dimensions are reset on a window resize, while an
+  immediately before element dimensions are reset on a resize event, while an
   `'orderly.resize'` occurs after the new dimensions have been calculated and
   applied.
 
-  Each event handler is passed the arguments `event`, `element`, `height`,
-  `column`, `columnCount` and `options`. For example:
+  The event handlers are called as follows:
+
+    resetHandler(
+        element
+      , options.resetHeight
+      , collectionIndex
+      , collectionLength
+      , options
+    );
+
+    resizeHandler(
+        element
+      , height
+      , rowIndex
+      , rowLength
+      , options
+    );
+
+  eg.
 
     var handler = function( e, el, h ) { $( el ).css( 'line-height', h ) };
 
@@ -60,6 +77,11 @@
   resize event on page load:
 
     $( window ).trigger( 'resize' );
+
+  If this will have undesirable side effects, you can also trigger a resize
+  directly on the jQuery object:
+
+    $( '.product' ).trigger( 'orderly' );
 
 
 ##  Considerations  ##

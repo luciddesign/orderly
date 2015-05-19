@@ -1,180 +1,211 @@
 ( function ( $ ) {
 
-    var Orderly = function ( $elements, options ) {
-        this.__init( $elements, options );
+    if ( window.__orderly ) { return; } window.__orderly = true;
+
+    var $w = $( window );
+
+    $w.on( 'resize', function ( e ) {
+        $w.trigger( 'orderly' );
+    });
+
+    // ---
+
+    var proto = {};
+
+    proto.init = function ( $els, options ) {
+        this.$els    = $els;
+        this.len     = $els.length;
+        this.options = $.extend( { resetHeight: '' }, options );
+
+        return this;
     };
 
-    var o = Orderly, p = o.prototype;
+    /*    Event Handlers
+       ~~~~~~~~~~~~~~~~~~~~ */
 
-    o.counter = 0;
-
-    // -- Constructor --
-
-    p.__init = function ( $elements, options ) {
-        this.$elements = $elements;
-        this.options   = $.extend( {}, this.defaults, options );
-    };
-
-    p.defaults = {
-        resetHeight: '' // eg. 'auto', '36px' ...
-    };
-
-    // -- Event Handlers --
-
-    p.attach = function () {
+    proto.attach = function () {
         if ( this.attached === undefined ) {
-            $( window ).on( 'resize', this.handlers().resize );
-
             this.attached = true;
+
+            $( window ).on( 'orderly', this.handlers().resize );
         }
     };
 
-    p.handlers = function () {
+    proto.handlers = function () {
         var that = this;
 
-        return { resize: function ( e ) {
-            that._eachRow( function ( $elements ) {
-                that._resizeElements( $elements );
-            });
-        }};
+        return {
+            resize: _debounce( function () {
+                _reset( that );
+                _eachElement( that );
+            }, 100 )
+        };
     };
 
-    // -- Private(-ish) --
+    /*    Private
+       ~~~~~~~~~~~~~ */
 
-    p._columnCount = function () {
-        var lastPos = 0, pos = 0, count = 0;
-
-        this.$elements.each( function () {
-            pos = $( this ).offset().left, count += 1;
-
-            if ( pos <= lastPos && lastPos !== 0 ) {
-                count -= 1; return false;
-            }
-
-            lastPos = pos;
-        });
-
-        return count;
-    };
-
-    p._eachRow = function ( callback ) {
-        var d = this._dimensions();
-
-        for ( var start, $row, i = 0; i < d.r; i++ ) {
-            start = d.c * i;
-            $row  = this.$elements.slice( start, start + d.c );
-
-            callback( $row, i );
+    var _eachElement = function ( obj ) {
+        for ( var i = 0; i < obj.len; ) {
+            i = _currentRow( obj, null, 0, [], i );
         }
     };
 
-    p._dimensions = function () {
-        var columns = this._columnCount()
-          , rows    = Math.ceil( this.$elements.length / columns );
+    var _currentRow = function ( obj, lastPos, max, row, i ) {
+        for ( ; i < obj.len; ) {
+            lastPos = _inRow( obj, lastPos, i );
 
-        return { c: columns, r: rows };
+            if ( lastPos === null ) break;
+
+            max = _max( obj, max, i );
+            row.push( obj.$els[i] );
+
+            i++;
+        }
+
+        max = _maxPx( max );
+
+        _resize( obj, $( row ), max );
+
+        return i;
     };
 
-    p._resizeElements = function ( $elements ) {
-        var height  = this._maxHeight( $elements )
-          , options = this.options;
+    var _inRow = function ( obj, lastPos, i ) {
+        var $el = obj.$els.eq( i )
+          , pos = $el.offset().left;
 
-        $elements.each( function ( i, element ) {
-            $( element ).css( 'height', height );
-            $( element ).trigger( 'orderly.resize', [
-                element
-              , height
-              , i
-              , $elements.length
-              , options
-            ]);
+        if ( lastPos !== null && pos <= lastPos ) {
+            return null;
+        }
+
+        return pos;
+    };
+
+    // Returns larger of max and height of element indexed i.
+    //
+    var _max = function ( obj, max, i ) {
+        var box     = obj.$els[i].getBoundingClientRect()
+          , current = box.bottom - box.top;
+
+        return Math.max( max, current );
+    };
+
+    // Converts n to px value string for CSS.
+    //
+    var _maxPx = function ( n ) {
+        return Math.round( n ).toString() + 'px';
+    };
+
+    var _resize = function ( obj, $row, height ) {
+        $row.each( function ( i, el ) {
+            $( el ).css( { height: height } );
+
+            _emit( el, 'resize', height, i, $row.length, obj.options );
         });
     };
 
-    p._maxHeight = function ( $elements ) {
-        var value, current, max = 0, options = this.options, box;
+    var _reset = function ( obj ) {
+        var $all = obj.$els
+          , h    = obj.options.resetHeight;
 
-        $elements.each( function ( i, element ) {
-            $( element ).trigger( 'orderly.reset', [
-                element
-              , options.resetHeight
-              , i
-              , $elements.length
-              , options
-            ]);
+        $all.each( function ( i, el ) {
+            _emit( el, 'reset', h, i, $all.length, obj.options );
 
-            $( element ).css( 'height', options.resetHeight );
-            box     = element.getBoundingClientRect();
-            current = box.bottom - box.top;
-
-            if ( current > max ) {
-                max = current;
-            }
+            $( el ).css( { height: h } );
         });
-
-        value = Math.round( max ).toString(); // browser consistent rounding
-
-        return value += 'px';
     };
 
-    // -- jQuery Plugin --
-
-    var g = {};
-
-    g._delegate = function ( options ) {
-        var method = '_' + ( options && options.method || 'register' )
-          , m      = g[method];
-
-        m.call( this, options );
+    var _emit = function ( el, event, h, i, l, o ) {
+        $( el ).trigger( 'orderly.' + event, [ el, h, i, l, o ] );
     };
 
-    // Call for each specific collection of elements to align per row.
+    /*    jQuery Plugin
+       ~~~~~~~~~~~~~~~~~~~ */
 
-    g._register = function ( options ) {
-        var o = new Orderly( this, options );
+    $.fn.orderly = function ( options ) {
+        if ( this.length > 0 ) {
+            _delegate( this, options );
+        }
+
+        return this;
+    };
+
+    // ---
+
+    var _delegate = function ( $els, options ) {
+        var m  = options && options.method || 'register'
+          , fn = _methods[m];
+
+        fn( $els, options );
+    };
+
+    var _register = function ( $els, options ) {
+        var o = Object.create( proto ).init( $els, options );
 
         o.attach();
         o.handlers().resize();
     };
 
+    var _methods = {};
+
+    // Call for each specific collection of elements to align per row.
+    //
+    _methods['register'] = _register;
+
     // Call on a collection of parent containers. Each direct child element
     // will be given orderly().
+    //
+    _methods['children'] = function ( $els, options ) {
+        var c = _indexCounter++
 
-    g._children = function ( options ) {
-        var length  = this[0].children.length
-          , counter = o.counter++; // ensures unique selectors
-
-        g._childrenData.call( this, counter );
-        g._registerChildren( length, counter, options );
-        g._register.call( this, options );
+        _assignData( $els, c );
+        _registerChildren( $els, c, options );
+        _register( $els, options );
     };
 
-    g._childrenData = function ( counter ) {
-        this.each( function ( i, element ) {
-            $( element.children ).each( function ( i, child ) {
-                $( child ).attr( 'data-orderly', counter + ':' + i );
+    var _registerChildren = function ( $els, c, options ) {
+        var len = $els[0].children.length;
+
+        for ( var i = 0; i < len; i++ ) {
+            _register( _find( c, i ), options );
+        }
+    };
+
+    // Assign data-orderly for all children of each element.
+    //
+    var _assignData = function ( $els, c ) {
+        $els.each( function ( i, el ) {
+            $( el.children ).each( function ( i, ch ) {
+                $( ch ).attr( 'data-orderly', c + ':' + i );
             });
         });
     };
 
-    g._registerChildren = function ( length, counter, options ) {
-        for ( var i = 0; i < length; i++ ) {
-            g._register.call( g._find( counter, i ), options );
-        }
+    // Return collection of elements matching counter c and index i.
+    //
+    var _find = function ( c, i ) {
+        return $( '[data-orderly="' + c + ':' + i + '"]' );
     };
 
-    g._find = function ( counter, i ) {
-        return $( '[data-orderly="' + counter + ':' + i + '"]' );
+    /*    Util
+       ~~~~~~~~~~ */
+
+    var _debounce = function ( fn, ms ) {
+        var timeout;
+
+        return function () {
+            clearTimeout( timeout );
+
+            timeout = setTimeout( function () {
+                timeout = null;
+                fn.apply( this, arguments );
+            }, ms );
+        };
     };
 
-    // ---
+    /*    State
+       ~~~~~~~~~~~ */
 
-    $.fn.orderly = function ( options ) {
-        if ( this.length > 0 ) {
-            g._delegate.call( this, options );
-        }
-
-        return this;
-    };
+    var _indexCounter = 0;
 
 })( jQuery );
