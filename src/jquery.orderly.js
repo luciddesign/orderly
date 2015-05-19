@@ -12,10 +12,9 @@
 
     var proto = {};
 
-    proto.init = function ( $els, options ) {
-        this.$els    = $els;
-        this.len     = $els.length;
-        this.options = $.extend( { resetHeight: '' }, options );
+    proto.init = function ( $els ) {
+        this.$els = $els;
+        this.len  = $els.length;
 
         return this;
     };
@@ -100,23 +99,22 @@
         $row.each( function ( i, el ) {
             $( el ).css( { height: height } );
 
-            _emit( el, 'resize', height, i, $row.length, obj.options );
+            _emit( el, 'resize', height, i, $row.length );
         });
     };
 
     var _reset = function ( obj ) {
-        var $all = obj.$els
-          , h    = obj.options.resetHeight;
+        var $all = obj.$els;
 
         $all.each( function ( i, el ) {
-            _emit( el, 'reset', h, i, $all.length, obj.options );
+            _emit( el, 'reset', '', i, $all.length );
 
-            $( el ).css( { height: h } );
+            $( el ).css( { height: '' } );
         });
     };
 
-    var _emit = function ( el, event, h, i, l, o ) {
-        $( el ).trigger( 'orderly.' + event, [ el, h, i, l, o ] );
+    var _emit = function ( el, event, h, i, l ) {
+        $( el ).trigger( 'orderly.' + event, [ el, h, i, l ] );
     };
 
     /*    jQuery Plugin
@@ -136,11 +134,11 @@
         var m  = options && options.method || 'register'
           , fn = _methods[m];
 
-        fn( $els, options );
+        fn( $els );
     };
 
-    var _register = function ( $els, options ) {
-        var o = Object.create( proto ).init( $els, options );
+    var _register = function ( $els ) {
+        var o = Object.create( proto ).init( $els );
 
         o.attach();
         o.handlers().resize();
@@ -155,19 +153,19 @@
     // Call on a collection of parent containers. Each direct child element
     // will be given orderly().
     //
-    _methods['children'] = function ( $els, options ) {
+    _methods['children'] = function ( $els ) {
         var c = _indexCounter++
 
         _assignData( $els, c );
-        _registerChildren( $els, c, options );
-        _register( $els, options );
+        _registerChildren( $els, c );
+        _register( $els );
     };
 
-    var _registerChildren = function ( $els, c, options ) {
+    var _registerChildren = function ( $els, c ) {
         var len = $els[0].children.length;
 
         for ( var i = 0; i < len; i++ ) {
-            _register( _find( c, i ), options );
+            _register( _find( c, i ) );
         }
     };
 
