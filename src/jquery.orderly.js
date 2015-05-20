@@ -26,19 +26,17 @@
         if ( this.attached === undefined ) {
             this.attached = true;
 
-            $( window ).on( 'orderly', this.handlers().resize );
+            $w.on( 'orderly', _debounce( this.handler(), 100 ) );
         }
     };
 
-    proto.handlers = function () {
+    proto.handler = function () {
         var that = this;
 
-        return {
-            resize: _debounce( function () {
-                _reset( that );
-                _eachElement( that );
-            }, 100 )
-        };
+        return function () {
+            _reset( that );
+            _eachElement( that );
+        }
     };
 
     /*    Private
@@ -141,7 +139,7 @@
         var o = Object.create( proto ).init( $els );
 
         o.attach();
-        o.handlers().resize();
+        o.handler()();
     };
 
     var _methods = {};
@@ -157,6 +155,7 @@
         var c = _indexCounter++
 
         _assignData( $els, c );
+        _register( $els ); // non-cleared floats flush-left on new row
         _registerChildren( $els, c );
         _register( $els );
     };
