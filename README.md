@@ -50,10 +50,9 @@
 
     resetHandler(
         element
-      , options.resetHeight
+      , height
       , collectionIndex
       , collectionLength
-      , options
     );
 
     resizeHandler(
@@ -61,7 +60,6 @@
       , height
       , rowIndex
       , rowLength
-      , options
     );
 
   eg.
@@ -73,15 +71,10 @@
     });
 
   Note that if your initial page state relies on these functions, you may have
-  to trigger them manually. You might achieve this by triggering a window
-  resize event on page load:
+  to trigger them manually. You might achieve this by triggering an
+  `'orderly'` resize event on page load:
 
-    $( window ).trigger( 'resize' );
-
-  If this will have undesirable side effects, you can also trigger a resize
-  directly on the jQuery object:
-
-    $( '.product' ).trigger( 'orderly' );
+    $( window ).trigger( 'orderly' );
 
 
 ##  Considerations  ##
