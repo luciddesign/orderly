@@ -14,9 +14,14 @@
 
     proto.init = function ( $els ) {
         this.$els = $els;
-        this.len  = $els.length;
 
         return this;
+    };
+
+    proto.find = function () {
+        return this.$els.filter( function ( i, el ) {
+            return $( el ).width() > 0; // filters out undisplayed elements
+        });
     };
 
     /*    Event Handlers
@@ -31,57 +36,57 @@
     };
 
     proto.handler = function () {
-        var that = this;
+        var $els = this.find();
 
         return function () {
-            _reset( that );
-            _eachElement( that );
+            _reset( $els );
+            _eachElement( $els );
         }
     };
 
     /*    Private
        ~~~~~~~~~~~~~ */
 
-    var _eachElement = function ( obj ) {
-        for ( var i = 0; i < obj.len; ) {
-            i = _currentRow( obj, null, 0, [], i );
+    var _eachElement = function ( $els ) {
+        for ( var i = 0; i < $els.length; ) {
+            i = _currentRow( $els, null, 0, [], i );
         }
     };
 
-    var _currentRow = function ( obj, lastPos, max, row, i ) {
-        for ( ; i < obj.len; ) {
-            lastPos = _inRow( obj, lastPos, i );
+    var _currentRow = function ( $els, lastPos, max, row, i ) {
+        for ( ; i < $els.length; ) {
+            lastPos = _inRow( $els, lastPos, i );
 
             if ( lastPos === null ) break;
 
-            max = _max( obj, max, i );
-            row.push( obj.$els[i] );
+            max = _max( $els, max, i );
+            row.push( $els[i] );
 
             i++;
         }
 
         max = _maxPx( max );
 
-        _resize( obj, $( row ), max );
+        _resize( $( row ), max );
 
         return i;
     };
 
-    var _inRow = function ( obj, lastPos, i ) {
-        var $el = obj.$els.eq( i )
+    var _inRow = function ( $els, lastPos, i ) {
+        var $el = $els.eq( i )
           , pos = $el.offset().left;
 
         if ( lastPos !== null && pos <= lastPos ) {
             return null;
+        } else {
+            return pos;
         }
-
-        return pos;
     };
 
     // Returns larger of max and height of element indexed i.
     //
-    var _max = function ( obj, max, i ) {
-        var box     = obj.$els[i].getBoundingClientRect()
+    var _max = function ( $els, max, i ) {
+        var box     = $els[i].getBoundingClientRect()
           , current = box.bottom - box.top;
 
         return Math.max( max, current );
@@ -93,7 +98,7 @@
         return Math.round( n ).toString() + 'px';
     };
 
-    var _resize = function ( obj, $row, height ) {
+    var _resize = function ( $row, height ) {
         $row.each( function ( i, el ) {
             $( el ).css( { height: height } );
 
@@ -101,11 +106,9 @@
         });
     };
 
-    var _reset = function ( obj ) {
-        var $all = obj.$els;
-
-        $all.each( function ( i, el ) {
-            _emit( el, 'reset', '', i, $all.length );
+    var _reset = function ( $els ) {
+        $els.each( function ( i, el ) {
+            _emit( el, 'reset', '', i, $els.length );
 
             $( el ).css( { height: '' } );
         });
@@ -152,7 +155,7 @@
     // will be given orderly().
     //
     _methods['children'] = function ( $els ) {
-        var c = _indexCounter++
+        var c = _indexCounter++;
 
         _assignData( $els, c );
         _register( $els ); // non-cleared floats flush-left on new row
