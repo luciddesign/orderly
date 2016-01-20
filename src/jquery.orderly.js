@@ -36,9 +36,10 @@
     };
 
     proto.handler = function () {
-        var $els = this.find();
+        var that = this;
 
         return function () {
+            var $els = that.find();
             _reset( $els );
             _eachElement( $els );
         }
