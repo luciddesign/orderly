@@ -20,7 +20,7 @@
 
     proto.find = function () {
         return this.$els.filter( function ( i, el ) {
-            return $( el ).width() > 0; // filters out undisplayed elements
+            return el.offsetHeight > 0; // filters out undisplayed elements
         });
     };
 
